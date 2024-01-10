@@ -24,12 +24,18 @@ function flyToLocation(currentFeature) {
 
 function createPopup(currentFeature) {
   const popups = document.getElementsByClassName('mapboxgl-popup');
-  /** Check if there is already a popup on the map and if so, remove it */
   if (popups[0]) popups[0].remove();
+
+  const additionalProperty1 = currentFeature.properties['Type'];
+  const additionalProperty2 = currentFeature.properties['type'];
+  // Add more properties as needed
+
   new mapboxgl.Popup({ closeOnClick: true })
-    .setLngLat(currentFeature.geometry.coordinates)
-    .setHTML('<h4>' + currentFeature.properties[config.popupInfo] + '</h4>')
-    .addTo(map);
+      .setLngLat(currentFeature.geometry.coordinates)
+      .setHTML('<h4>' + currentFeature.properties[config.popupInfo] + '</h4>'
+               + '<p>' + Longitude + '</p>'
+               + '<p>' + additionalProperty2 + '</p>')
+      .addTo(map);
 }
 
 function buildLocationList(locationData) {
@@ -464,12 +470,12 @@ map.on('load', () => {
 
     map.on('click', 'locationData', (e) => {
       const features = map.queryRenderedFeatures(e.point, {
-        layers: ['locationData'],
+        layers: ['locationData', 'Latitude'],
       });
-      const clickedPoint = features[0].geometry.coordinates;
+      const clickedPoint = features[1].geometry.coordinates;
       flyToLocation(clickedPoint);
       sortByDistance(clickedPoint);
-      createPopup(features[0]);
+      createPopup(features[1]);
     });
 
     map.on('mouseenter', 'locationData', () => {
